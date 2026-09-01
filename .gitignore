@@ -1,0 +1,40 @@
+# macOS
+.DS_Store
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Logs / temporary output
+*.log
+tmp/
+.cache/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+credentials*
+secrets*
+
+# Grok runtime state — NEVER commit
+sessions/
+memtrace/
+downloads/
+marketplace-cache/
+models_cache.json
+auth.json
+
+# Local backups
+*.backup.*
+*.bak
