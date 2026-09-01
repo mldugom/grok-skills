@@ -1,0 +1,5 @@
+start
+checkpoint
+prioritize
+audit
+end
