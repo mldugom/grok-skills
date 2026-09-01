@@ -23,5 +23,6 @@ The repository itself is the source of truth. Installed copies under
 
 ## Current priority
 
-Build and validate the lifecycle layer before designing the
-quantitative research skill spine.
+Lifecycle layer is implemented and verified. Do not design the
+quantitative research skill spine until that architecture has been
+planned deliberately.

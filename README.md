@@ -88,6 +88,20 @@ Do not manually evolve installed copies when the corresponding source
 exists in this repository. Modify the repository source, test it, then
 sync/install it.
 
+## Lifecycle installation
+
+Install the five lifecycle skills and the efficiency policy:
+
+    bash scripts/install.sh
+
+Compare installed copies under `~/.grok` to this repository:
+
+    bash scripts/verify.sh
+
+Validate lifecycle `SKILL.md` metadata in-repo (does not use `~/.grok`):
+
+    bash tests/test_lifecycle_metadata.sh
+
 ## Principles
 
 - Skills should be modular rather than monolithic.
@@ -104,6 +118,6 @@ sync/install it.
 
 ## Status
 
-Phase 1: lifecycle layer.
+Phase 1 lifecycle layer is implemented, installed, and verified.
 
 Next planned design phase: quantitative research spine.

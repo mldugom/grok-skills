@@ -7,17 +7,25 @@ operating procedures.
 
 ## Phase
 
-Phase 1 — lifecycle layer.
+Phase 1 — lifecycle layer — complete.
 
-## Immediate scope
+## Lifecycle status
 
-Implement and validate:
+Canonical implementations exist under `skills/lifecycle/`:
 
 1. `/start`
 2. `/checkpoint`
 3. `/prioritize`
 4. `/audit`
 5. `/end`
+
+They are installed to `~/.grok/skills/` via `scripts/install.sh`.
+`scripts/verify.sh` confirmed the installed copies and
+`policies/EFFICIENT_AGENT.md` match this repository.
+
+In-repo metadata validation does not use `~/.grok`:
+
+    bash tests/test_lifecycle_metadata.sh
 
 ## Architecture
 
@@ -27,6 +35,10 @@ Global Grok installation locations are deployment targets:
 
 - `~/.grok/skills`
 - `~/.grok/policies`
+
+## Immediate next work
+
+Do not implement quantitative-research or domain skills yet.
 
 ## Next major design phase
 
