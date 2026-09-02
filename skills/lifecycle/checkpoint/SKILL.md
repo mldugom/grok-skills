@@ -1,6 +1,6 @@
 ---
 name: checkpoint
-description: Create a durable mid-session project checkpoint without ending the working session.
+description: Create a durable mid-session project checkpoint, including a commit of intended work, without ending the working session.
 when-to-use:
   - checkpoint project
   - save current state
@@ -10,7 +10,7 @@ disable-model-invocation: true
 argument-hint: "[optional checkpoint note]"
 metadata:
   author: mldugom
-  short-description: Persist current project state
+  short-description: Persist and commit current project state
 ---
 
 # /checkpoint — Durable Mid-Session Checkpoint
@@ -38,8 +38,13 @@ Identify:
 Inspect:
 - git status,
 - relevant diff,
-- branch,
-- current project-state documentation.
+- branch and upstream,
+- current project-state documentation,
+- workspace kind: primary checkout, git-linked worktree, or Grok isolated worktree.
+
+If this is a Grok isolated worktree or git-linked worktree, record the source checkout (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
+
+Operate only on this working copy. Do not silently edit or commit from the source checkout or another worktree.
 
 ### 3. Update durable state
 
@@ -71,18 +76,25 @@ Update other documentation only when the work materially changed:
 
 Do not perform cosmetic documentation rewrites.
 
-### 5. Commit behavior
+### 5. Commit
 
-Do NOT automatically commit unless:
+After durable state is updated, commit intended session work unless:
 
-- the user explicitly requests a commit, OR
-- project standing instructions explicitly establish checkpoint commits as expected behavior.
+- the user says not to commit,
+- there is nothing to commit,
+- the resulting state should not be committed,
+- project policy forbids autonomous commits,
+- unrelated dirty state cannot be safely separated.
 
 If committing:
-- inspect diff first,
+- inspect the diff first,
 - include only intended files,
 - never absorb unrelated pre-existing dirty files,
 - use a descriptive commit message.
+
+If this working copy is an isolated worktree, commit here. State that the source checkout is unchanged. Do not apply, merge, or delete the worktree.
+
+Do not push. Push belongs to `/end`.
 
 ### 6. Continue state
 
@@ -90,6 +102,11 @@ Return:
 
 ### CHECKPOINT CREATED
 What durable state was updated.
+
+### GIT
+- workspace kind and source checkout if different,
+- commit hash/message if created,
+- intentionally uncommitted files if any.
 
 ### COMPLETED SINCE LAST CHECKPOINT
 

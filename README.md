@@ -12,11 +12,15 @@ The repository separates several concerns:
 
 Explicit session-control commands:
 
-- `/start`
-- `/checkpoint`
+- `/start` — bootstrap from durable state; report workspace kind
+- `/checkpoint` — persist state and commit intended work; do not push
 - `/prioritize`
 - `/audit`
-- `/end`
+- `/end` — verify, commit, and optionally push
+
+All five are worktree-aware: they classify the working copy as a primary
+checkout, a git-linked worktree, or a Grok isolated worktree, and they
+operate only on that copy.
 
 ### Research Methods
 
@@ -98,7 +102,8 @@ Compare installed copies under `~/.grok` to this repository:
 
     bash scripts/verify.sh
 
-Validate lifecycle `SKILL.md` metadata in-repo (does not use `~/.grok`):
+Validate lifecycle `SKILL.md` metadata and v1.1 contracts in-repo
+(does not use `~/.grok`):
 
     bash tests/test_lifecycle_metadata.sh
 
@@ -118,6 +123,6 @@ Validate lifecycle `SKILL.md` metadata in-repo (does not use `~/.grok`):
 
 ## Status
 
-Phase 1 lifecycle layer is implemented, installed, and verified.
+Lifecycle v1.1 is implemented: checkpoint commits and worktree-awareness.
 
 Next planned design phase: quantitative research spine.

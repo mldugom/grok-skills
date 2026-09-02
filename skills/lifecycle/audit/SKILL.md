@@ -34,6 +34,8 @@ The goal is diagnosis and prioritization.
 
 Start with repository structure, instructions, project state, recent changes, and relevant configuration.
 
+Audit this working copy. If the session is in a git-linked or Grok isolated worktree, say so and do not silently switch to the source checkout.
+
 Prefer evidence-driven sampling over indiscriminate file reading.
 
 If the repository is large, identify the most important execution paths and audit those first.

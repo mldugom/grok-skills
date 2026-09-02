@@ -19,6 +19,8 @@ Use this when direction needs to be reconsidered rather than merely continuing t
 
 This is a decision exercise, not an implementation exercise.
 
+Use this working copy as the evidence base. If the session is in a git-linked or Grok isolated worktree, say so; do not silently switch to the source checkout.
+
 ## Objective
 
 Re-evaluate the project from first principles using current evidence.

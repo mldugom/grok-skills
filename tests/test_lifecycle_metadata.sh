@@ -55,9 +55,53 @@ for skill in "${SKILLS[@]}"; do
         continue
     fi
 
-    echo "PASS  /$skill"
+    echo "PASS  /$skill metadata"
     PASS=$((PASS + 1))
 done
+
+echo
+echo "LIFECYCLE V1.1 CONTRACTS"
+echo
+
+require() {
+    local skill="$1"
+    local pattern="$2"
+    local label="$3"
+    local src="$REPO_ROOT/skills/lifecycle/$skill/SKILL.md"
+
+    if grep -q "$pattern" "$src"; then
+        echo "PASS  /$skill $label"
+        PASS=$((PASS + 1))
+    else
+        echo "FAIL  /$skill missing $label"
+        FAIL=$((FAIL + 1))
+    fi
+}
+
+forbid() {
+    local skill="$1"
+    local pattern="$2"
+    local label="$3"
+    local src="$REPO_ROOT/skills/lifecycle/$skill/SKILL.md"
+
+    if grep -q "$pattern" "$src"; then
+        echo "FAIL  /$skill still has $label"
+        FAIL=$((FAIL + 1))
+    else
+        echo "PASS  /$skill $label absent"
+        PASS=$((PASS + 1))
+    fi
+}
+
+for skill in "${SKILLS[@]}"; do
+    require "$skill" "worktree" "worktree-awareness"
+done
+
+require start "### WORKSPACE" "WORKSPACE output"
+require checkpoint "commit intended session work" "default checkpoint commits"
+require checkpoint "Do not push" "checkpoint does not push"
+forbid checkpoint "Do NOT automatically commit" "opt-in-only commits"
+require end "source checkout" "end worktree source reporting"
 
 echo
 echo "PASS: $PASS"

@@ -34,6 +34,8 @@ Never:
 
 Commit and push only intended session work.
 
+A commit or push in an isolated worktree updates this worktree (and origin, if pushed). It does not update a different source checkout until that checkout pulls or the user applies the worktree. Do not apply, merge, or delete the worktree unless the user asks.
+
 If there is ambiguity about whether a file belongs to the current work, leave it out and identify it.
 
 ## Procedure
@@ -58,7 +60,12 @@ Check:
 - upstream,
 - git status,
 - relevant diff,
-- untracked files.
+- untracked files,
+- workspace kind: primary checkout, git-linked worktree, or Grok isolated worktree.
+
+If this is a Grok isolated worktree or git-linked worktree, record the source checkout (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
+
+Operate only on this working copy. Do not silently edit, commit, or push from the source checkout or another worktree.
 
 Identify pre-existing versus session-created changes when reasonably possible.
 
@@ -152,6 +159,7 @@ Tests/checks and outcomes.
 ### DOCUMENTATION UPDATED
 
 ### GIT
+- workspace kind and source checkout if different,
 - branch,
 - commit hash/message if created,
 - push status,

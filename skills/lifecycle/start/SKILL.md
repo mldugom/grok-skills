@@ -40,7 +40,20 @@ Determine:
 - upstream branch if any,
 - clean/dirty git state,
 - recent commits,
-- whether there are uncommitted or untracked files.
+- whether there are uncommitted or untracked files,
+- workspace kind.
+
+Classify this working copy as one of:
+
+- **primary checkout** — the user's ordinary clone,
+- **git-linked worktree** — `.git` is a file, or `git rev-parse --git-dir` differs from `--git-common-dir`,
+- **Grok isolated worktree** — path under `~/.grok/worktrees/`, or `.git/grok-worktree-source` exists.
+
+When this is not the primary checkout, record the source path (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
+
+Operate only on this working copy. Do not silently edit, commit, or push from the source checkout or another worktree.
+
+A commit or push here does not update a different source checkout until that checkout pulls or the user applies the worktree.
 
 Do not modify anything.
 
@@ -109,6 +122,13 @@ Return:
 
 ### CURRENT STATE
 Concise description of what presently exists.
+
+### WORKSPACE
+- working copy path,
+- kind: primary checkout | git-linked worktree | grok isolated worktree,
+- source checkout if different,
+- branch and upstream,
+- clean or dirty.
 
 ### CURRENT OBJECTIVE
 What the project/session appears to be trying to accomplish.
