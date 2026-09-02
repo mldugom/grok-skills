@@ -44,9 +44,6 @@ applied.
 
 ## Immediate next work
 
-Land Lifecycle v1.1 onto the intended primary branch via `/end` (safe
-fast-forward or user confirmation). Do not push until `/end`.
-
 Do not implement quantitative-research or domain skills yet.
 
 ## Confirmed findings
