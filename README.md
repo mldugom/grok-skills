@@ -12,15 +12,14 @@ The repository separates several concerns:
 
 Explicit session-control commands:
 
-- `/start` — bootstrap from durable state; report workspace kind
-- `/checkpoint` — persist state and commit intended work; do not push
+- `/start` — bootstrap from durable state; report checkout, HEAD, and
+  primary vs isolated/secondary (with a worktree warning when secondary)
+- `/checkpoint` — targeted verification, persist state, commit intended
+  work locally; never push by default
 - `/prioritize`
 - `/audit`
-- `/end` — verify, commit, and optionally push
-
-All five are worktree-aware: they classify the working copy as a primary
-checkout, a git-linked worktree, or a Grok isolated worktree, and they
-operate only on that copy.
+- `/end` — verify, commit, land onto the intended primary branch when
+  safe, then optionally push; otherwise WORKTREE LANDING REQUIRED
 
 ### Research Methods
 
@@ -123,6 +122,7 @@ Validate lifecycle `SKILL.md` metadata and v1.1 contracts in-repo
 
 ## Status
 
-Lifecycle v1.1 is implemented: checkpoint commits and worktree-awareness.
+Lifecycle v1.1 is implemented: checkpoint commits, worktree-awareness,
+and worktree landing before session complete.
 
 Next planned design phase: quantitative research spine.

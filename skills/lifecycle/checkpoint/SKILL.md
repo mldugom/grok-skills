@@ -35,20 +35,38 @@ Identify:
 
 ### 2. Review repository state
 
-Inspect:
-- git status,
-- relevant diff,
-- branch and upstream,
-- current project-state documentation,
-- workspace kind: primary checkout, git-linked worktree, or Grok isolated worktree.
+Inspect git status and the relevant diff.
 
-If this is a Grok isolated worktree or git-linked worktree, record the source checkout (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
+Determine:
 
-Operate only on this working copy. Do not silently edit or commit from the source checkout or another worktree.
+- current checkout path,
+- git root,
+- branch or detached HEAD,
+- HEAD SHA,
+- whether this is primary or isolated/secondary,
+- primary checkout if known safely (`.git/grok-worktree-source` when that path is a git working tree; otherwise the main worktree from `git worktree list`).
 
-### 3. Update durable state
+Distinguish intended session work from unrelated pre-existing changes.
 
-Update `PROJECT_STATE.md` or the repository's designated equivalent when appropriate.
+Operate only on this working copy.
+
+### 3. Verification
+
+Run the smallest sufficient targeted verification for the intended work.
+
+Prefer:
+- targeted tests,
+- relevant build/type checks,
+- focused data validations,
+- exact reproduction commands.
+
+Do not launch an expensive full suite solely because a checkpoint was requested.
+
+If verification materially fails, do not commit.
+
+### 4. Update durable state
+
+Update `PROJECT_STATE.md` or the repository's designated equivalent when warranted.
 
 Keep it concise and current.
 
@@ -65,36 +83,31 @@ It should capture:
 
 Do not dump chat history or terminal transcripts into project state.
 
-### 4. Documentation consistency
-
-Update other documentation only when the work materially changed:
-- architecture,
-- interfaces,
-- operating procedures,
-- research conclusions,
-- reproduction steps.
-
-Do not perform cosmetic documentation rewrites.
+Update other documentation only when the work materially changed architecture, interfaces, operating procedures, research conclusions, or reproduction steps.
 
 ### 5. Commit
 
-After durable state is updated, commit intended session work unless:
+After verification and durable state updates, commit the coherent intended checkpoint work unless:
 
 - the user says not to commit,
 - there is nothing to commit,
-- the resulting state should not be committed,
-- project policy forbids autonomous commits,
-- unrelated dirty state cannot be safely separated.
+- verification materially failed,
+- the intended change set cannot be separated safely from unrelated dirty state,
+- project policy forbids autonomous commits.
 
 If committing:
-- inspect the diff first,
 - include only intended files,
 - never absorb unrelated pre-existing dirty files,
-- use a descriptive commit message.
+- use a descriptive commit message,
+- record the resulting commit SHA.
 
-If this working copy is an isolated worktree, commit here. State that the source checkout is unchanged. Do not apply, merge, or delete the worktree.
+Never push by default. Push belongs to `/end`.
 
-Do not push. Push belongs to `/end`.
+Do not apply, merge, cherry-pick, or delete a worktree during `/checkpoint`.
+
+After a commit, check whether the intended primary branch is known to contain that SHA (inspect the primary checkout when its path is known). If that cannot be determined safely, report unknown.
+
+Never imply that a worktree commit exists in the primary checkout merely because it was committed successfully.
 
 ### 6. Continue state
 
@@ -104,8 +117,11 @@ Return:
 What durable state was updated.
 
 ### GIT
-- workspace kind and source checkout if different,
-- commit hash/message if created,
+- commit SHA, or none,
+- current checkout,
+- kind: primary | isolated/secondary,
+- whether the intended primary branch is known to contain the commit: yes | no | unknown,
+- whether the commit has been pushed: yes | no,
 - intentionally uncommitted files if any.
 
 ### COMPLETED SINCE LAST CHECKPOINT

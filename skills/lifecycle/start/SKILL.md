@@ -34,26 +34,32 @@ The objective is to establish the minimum sufficient understanding of the reposi
 
 Determine:
 
-- repository root,
-- current working directory,
-- current branch,
-- upstream branch if any,
+- current checkout path,
+- git root,
+- branch or detached HEAD,
+- HEAD SHA,
+- upstream if any,
 - clean/dirty git state,
 - recent commits,
-- whether there are uncommitted or untracked files,
-- workspace kind.
+- uncommitted or untracked files,
+- whether this is the primary checkout or a Grok/secondary worktree.
 
-Classify this working copy as one of:
+Treat as **isolated/secondary** when any of these hold:
 
-- **primary checkout** — the user's ordinary clone,
-- **git-linked worktree** — `.git` is a file, or `git rev-parse --git-dir` differs from `--git-common-dir`,
-- **Grok isolated worktree** — path under `~/.grok/worktrees/`, or `.git/grok-worktree-source` exists.
+- git root is under `$GROK_HOME/worktrees` or `~/.grok/worktrees`,
+- `.git/grok-worktree-source` exists,
+- `.git` is a file, or `git rev-parse --git-dir` differs from `--git-common-dir`.
 
-When this is not the primary checkout, record the source path (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
+Otherwise treat as **primary**, unless evidence shows this is not the user's ordinary checkout.
 
-Operate only on this working copy. Do not silently edit, commit, or push from the source checkout or another worktree.
+Record the primary checkout only when it can be determined safely:
 
-A commit or push here does not update a different source checkout until that checkout pulls or the user applies the worktree.
+- contents of `.git/grok-worktree-source` if that path is an existing git working tree,
+- otherwise the main worktree from `git worktree list` when this is a git-linked worktree.
+
+Do not guess a primary path from a username, host, or hardcoded home directory. If unknown, say unknown.
+
+Operate only on this working copy. Do not silently edit, commit, or push from the primary checkout or another worktree.
 
 Do not modify anything.
 
@@ -124,11 +130,18 @@ Return:
 Concise description of what presently exists.
 
 ### WORKSPACE
-- working copy path,
-- kind: primary checkout | git-linked worktree | grok isolated worktree,
-- source checkout if different,
-- branch and upstream,
+- current checkout path,
+- git root,
+- branch or detached HEAD,
+- HEAD SHA,
+- kind: primary | isolated/secondary,
+- primary checkout if known safely, else unknown,
 - clean or dirty.
+
+If this is isolated/secondary, also return:
+
+### WORKTREE WARNING
+Commits in this checkout may not yet exist in the user's primary checkout. State the primary path when known. Do not treat this checkout's HEAD as primary-branch state.
 
 ### CURRENT OBJECTIVE
 What the project/session appears to be trying to accomplish.

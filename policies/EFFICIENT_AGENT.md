@@ -32,6 +32,15 @@ For clear implementation tasks:
 - Avoid recursive research loops.
 - Avoid repeatedly asking another agent to verify already-established facts.
 
+## Worktree discipline
+
+- Do not create or switch to an isolated worktree for ordinary single-agent work.
+- Use isolation only when explicitly requested or materially useful.
+- Surface worktree use immediately.
+- Never confuse worktree state with primary-checkout state.
+- Before checkpoint/end, establish actual checkout and HEAD.
+- Never declare work landed until the intended branch actually contains it.
+
 ## Context discipline
 
 - Treat repository files as the durable source of truth, not conversation history.

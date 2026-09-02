@@ -7,18 +7,19 @@ operating procedures.
 
 ## Phase
 
-Phase 1 — lifecycle layer — complete.
 Lifecycle v1.1 — checkpoint commits and worktree-awareness.
 
 ## Lifecycle status
 
 Canonical implementations exist under `skills/lifecycle/`:
 
-1. `/start` — reports workspace kind (primary checkout, git-linked worktree, Grok isolated worktree)
-2. `/checkpoint` — updates durable state and commits intended work; does not push
+1. `/start` — reports checkout, git root, branch or detached HEAD, HEAD SHA, primary vs isolated/secondary, and a worktree warning when secondary
+2. `/checkpoint` — targeted verification, durable state, local commit of intended work, no push; reports SHA, checkout kind, whether the primary branch is known to contain the commit, and whether it was pushed
 3. `/prioritize`
 4. `/audit`
-5. `/end` — commit/push remain end-of-session; worktree-aware
+5. `/end` — must not declare SESSION COMPLETE until intended commits exist on the intended primary branch; otherwise WORKTREE LANDING REQUIRED. Safe fast-forward only.
+
+`policies/EFFICIENT_AGENT.md` includes Worktree discipline.
 
 They are installed to `~/.grok/skills/` via `scripts/install.sh`.
 `scripts/verify.sh` confirmed the installed copies and
@@ -43,7 +44,14 @@ applied.
 
 ## Immediate next work
 
+Land Lifecycle v1.1 onto the intended primary branch via `/end` (safe
+fast-forward or user confirmation). Do not push until `/end`.
+
 Do not implement quantitative-research or domain skills yet.
+
+## Confirmed findings
+
+`bash tests/test_lifecycle_metadata.sh` is CLEAN for v1.1 contracts.
 
 ## Next major design phase
 

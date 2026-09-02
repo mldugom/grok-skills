@@ -34,7 +34,7 @@ Never:
 
 Commit and push only intended session work.
 
-A commit or push in an isolated worktree updates this worktree (and origin, if pushed). It does not update a different source checkout until that checkout pulls or the user applies the worktree. Do not apply, merge, or delete the worktree unless the user asks.
+Never declare work landed until the intended primary branch actually contains it.
 
 If there is ambiguity about whether a file belongs to the current work, leave it out and identify it.
 
@@ -55,17 +55,18 @@ Do not claim work that was not completed.
 
 Check:
 
-- repository root,
-- branch,
+- current checkout path,
+- git root,
+- branch or detached HEAD,
+- HEAD SHA,
 - upstream,
 - git status,
 - relevant diff,
 - untracked files,
-- workspace kind: primary checkout, git-linked worktree, or Grok isolated worktree.
+- whether this is primary or isolated/secondary,
+- primary checkout if known safely (`.git/grok-worktree-source` when that path is a git working tree; otherwise the main worktree from `git worktree list`).
 
-If this is a Grok isolated worktree or git-linked worktree, record the source checkout (`cat .git/grok-worktree-source` when present, otherwise `git worktree list`).
-
-Operate only on this working copy. Do not silently edit, commit, or push from the source checkout or another worktree.
+Operate only on this working copy until a worktree landing step, if any.
 
 Identify pre-existing versus session-created changes when reasonably possible.
 
@@ -129,14 +130,51 @@ If the working session produced intended repository changes, create a descriptiv
 
 Do not use vague commit messages such as "updates".
 
-### 7. Push
+### 7. Worktree landing
 
-Push the current branch only when:
+Before SESSION COMPLETE, determine whether intended session commits actually exist on the intended primary branch.
+
+If this is already the primary checkout and the intended branch contains those commits, continue.
+
+If this is an isolated/secondary worktree and those commits have not landed on the intended primary branch:
+
+- do not silently cherry-pick,
+- do not force,
+- do not push an unintended detached/worktree state,
+- do not declare SESSION COMPLETE.
+
+A simple provably safe fast-forward may be performed only when all of:
+
+- the intended primary checkout path is known,
+- the intended primary branch is unambiguous,
+- the primary checkout has no conflicting dirty state,
+- session HEAD is a descendant of primary HEAD (fast-forward only; no rewrite, no merge commit).
+
+If those hold, fetch the session SHA into the primary repository if needed, then in the primary checkout run `git merge --ff-only <sha>`. Recheck that the primary branch contains the SHA.
+
+Otherwise stop for user confirmation and return:
+
+### WORKTREE LANDING REQUIRED
+- session checkout,
+- session HEAD,
+- intended primary checkout/branch if known,
+- primary HEAD if known,
+- whether the commit is known to exist on the intended primary branch,
+- the safest next action.
+
+Do not continue to SESSION COMPLETE from that state.
+
+### 8. Push
+
+Push only after intended session commits exist on the intended primary branch.
+
+Push the intended branch only when:
 
 - there is an intended commit to publish,
 - a remote/upstream is configured,
 - no project instruction forbids it,
-- no unresolved safety ambiguity exists.
+- no unresolved safety ambiguity exists,
+- HEAD is not an unintended detached/worktree state.
 
 Never force push.
 
@@ -144,9 +182,9 @@ If push requires permission/confirmation under the environment, request it rathe
 
 Confirm whether the remote push succeeded.
 
-### 8. Final handoff
+### 9. Final handoff
 
-Return:
+Return only when intended session commits exist on the intended primary branch:
 
 ### SESSION COMPLETE
 
@@ -159,9 +197,10 @@ Tests/checks and outcomes.
 ### DOCUMENTATION UPDATED
 
 ### GIT
-- workspace kind and source checkout if different,
-- branch,
-- commit hash/message if created,
+- current checkout and kind: primary | isolated/secondary,
+- branch or detached HEAD,
+- commit SHA/message if created,
+- whether the intended primary branch is known to contain the commit,
 - push status,
 - intentionally uncommitted files if any.
 
