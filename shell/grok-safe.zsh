@@ -33,3 +33,13 @@ grok-cost() {
     fi
     python3 "$TRACKER" "$@"
 }
+
+# Reusable local operations dashboard: Grok spend + git/project progress + runtime health.
+grok-dashboard() {
+    local DASHBOARD="$HOME/repos/grok-skills/scripts/grok-dashboard.py"
+    if [[ ! -f "$DASHBOARD" ]]; then
+        echo "grok-dashboard: script not found at $DASHBOARD" >&2
+        return 1
+    fi
+    python3 "$DASHBOARD" "$@"
+}
