@@ -36,6 +36,10 @@ policy, caps autonomous turns at 6, and disables subagents by default.
 `scripts/configure-runtime.sh` also configures Grok's built-in status line
 to show cwd, model, context, cost, and turn timer.
 
+`scripts/grok-cost.py`, exposed as `grok-cost` by the shell helper, tracks
+observed spend from the xAI prepaid-balance delta instead of treating the
+status-line `$` value as authoritative billing. See `docs/COST_TRACKING.md`.
+
 ### Research Methods
 
 Reusable methodological skills such as:
@@ -114,7 +118,7 @@ Install lifecycle skills and the efficiency policy:
     bash scripts/install.sh
 
 Install/update runtime credit controls and the canonical `grok-safe` shell
-function:
+function (including `grok-cost`):
 
     bash scripts/configure-runtime.sh
     source ~/.zshrc
@@ -126,6 +130,19 @@ Compare installed skill/policy copies under `~/.grok` to this repository:
 Validate lifecycle metadata and lifecycle/efficiency contracts in-repo:
 
     bash tests/test_lifecycle_metadata.sh
+
+## Cost tracking
+
+Track the prepaid balance around a Grok session:
+
+    grok-cost start 20.00 --label "crypto A0"
+    grok-cost status 16.30
+    grok-cost end 16.30
+    grok-cost history --limit 10
+
+The tracker stores only local session accounting under `~/.grok/cost-tracker`.
+It does not store an API key or infer authoritative spend from tokens, turns,
+tool calls, or the Grok status-line `$` indicator.
 
 ## Recommended daily workflow
 
@@ -163,7 +180,8 @@ prefer `/end` and a fresh `/start`.
 Lifecycle v1.1 is implemented: checkpoint commits, worktree-awareness,
 and worktree landing before session complete.
 
-Efficiency v1.2 adds credit/context/tool-call controls and a cost-visible
-runtime launcher/status line.
+Efficiency v1.2 adds credit/context/tool-call controls, a cost-visible
+runtime launcher/status line, and prepaid-balance reconciliation via
+`grok-cost`.
 
 Next planned design phase: quantitative research spine.
