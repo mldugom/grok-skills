@@ -40,6 +40,10 @@ to show cwd, model, context, cost, and turn timer.
 observed spend from the xAI prepaid-balance delta instead of treating the
 status-line `$` value as authoritative billing. See `docs/COST_TRACKING.md`.
 
+`scripts/grok-dashboard.py`, exposed as `grok-dashboard`, provides a reusable
+local HTML operations monitor for Grok spend, project/git progress, roadmap
+state, and runtime health. See `docs/GROK_DASHBOARD.md`.
+
 ### Research Methods
 
 Reusable methodological skills such as:
@@ -118,7 +122,7 @@ Install lifecycle skills and the efficiency policy:
     bash scripts/install.sh
 
 Install/update runtime credit controls and the canonical `grok-safe` shell
-function (including `grok-cost`):
+function (including `grok-cost` and `grok-dashboard`):
 
     bash scripts/configure-runtime.sh
     source ~/.zshrc
@@ -143,6 +147,21 @@ Track the prepaid balance around a Grok session:
 The tracker stores only local session accounting under `~/.grok/cost-tracker`.
 It does not store an API key or infer authoritative spend from tokens, turns,
 tool calls, or the Grok status-line `$` indicator.
+
+## Operations dashboard
+
+Run a one-shot local HTML snapshot:
+
+    grok-dashboard --project ~/repos/crypto-innout --open
+
+Or keep a reusable monitor running and refreshing every 15 seconds:
+
+    grok-dashboard --project ~/repos/crypto-innout --watch 15 --open
+
+The dashboard serves on `127.0.0.1:8790` by default and monitors the project
+runtime on port `8787` by default, so it does not collide with Crypto Innout.
+Use `grok-cost status <balance>` during an active session to refresh the
+manual authoritative xAI balance shown on the dashboard.
 
 ## Recommended daily workflow
 
@@ -180,8 +199,8 @@ prefer `/end` and a fresh `/start`.
 Lifecycle v1.1 is implemented: checkpoint commits, worktree-awareness,
 and worktree landing before session complete.
 
-Efficiency v1.2 adds credit/context/tool-call controls, a cost-visible
-runtime launcher/status line, and prepaid-balance reconciliation via
-`grok-cost`.
+Efficiency v1.3 adds credit/context/tool-call controls, a cost-visible
+runtime launcher/status line, prepaid-balance reconciliation via `grok-cost`,
+and the reusable `grok-dashboard` operations monitor.
 
 Next planned design phase: quantitative research spine.
