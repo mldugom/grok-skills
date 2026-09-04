@@ -67,9 +67,12 @@ def cmd_start(args: argparse.Namespace) -> int:
             f"({cur.get('label') or 'unlabeled'}, started {cur.get('started_at')}). "
             "End it first or pass --force."
         )
+    started = now_iso()
     state = {
-        "started_at": now_iso(),
+        "started_at": started,
         "start_balance": str(args.balance),
+        "last_balance": str(args.balance),
+        "last_checked_at": started,
         "label": args.label or "",
         "project": args.project or Path.cwd().name,
     }
@@ -110,9 +113,16 @@ def cmd_status(args: argparse.Namespace) -> int:
         print(f"Active: {state.get('label') or state.get('project') or 'session'}")
         print(f"  started        {state['started_at']}")
         print(f"  start balance  {fmt(Decimal(state['start_balance']))}")
+        if state.get("last_balance") is not None:
+            print(f"  last observed  {fmt(Decimal(state['last_balance']))} at {state.get('last_checked_at') or '?'}")
         print("Pass the current xAI balance for an exact observed-spend delta:")
         print("  grok-cost status <balance>")
         return 0
+    # Persist the latest manual balance observation so the reusable dashboard can
+    # display active-session spend without inventing a token-based estimate.
+    state["last_balance"] = str(args.balance)
+    state["last_checked_at"] = now_iso()
+    write_current(state)
     print_status(state, args.balance)
     return 0
 
@@ -139,6 +149,8 @@ def append_ledger(row: dict) -> None:
 def cmd_end(args: argparse.Namespace) -> int:
     state = load_current()
     spent, _ = delta(state, args.balance)
+    state["last_balance"] = str(args.balance)
+    state["last_checked_at"] = now_iso()
     print_status(state, args.balance)
     row = {
         **state,
