@@ -105,13 +105,54 @@ require end "provably safe fast-forward" "safe fast-forward"
 require end "intended session commits actually exist on the intended primary branch" "landing check"
 
 POLICY="$REPO_ROOT/policies/EFFICIENT_AGENT.md"
-if grep -q "^## Worktree discipline$" "$POLICY" \
-    && grep -q "Do not create or switch to an isolated worktree for ordinary single-agent work." "$POLICY" \
-    && grep -q "Never declare work landed until the intended branch actually contains it." "$POLICY"; then
-    echo "PASS  efficiency policy worktree discipline"
+LAUNCHER="$REPO_ROOT/shell/grok-safe.zsh"
+RUNTIME="$REPO_ROOT/scripts/configure-runtime.sh"
+
+check_policy() {
+    local pattern="$1"
+    local label="$2"
+    if grep -q "$pattern" "$POLICY"; then
+        echo "PASS  efficiency policy $label"
+        PASS=$((PASS + 1))
+    else
+        echo "FAIL  efficiency policy missing $label"
+        FAIL=$((FAIL + 1))
+    fi
+}
+
+echo
+echo "EFFICIENCY V1.2 CONTRACTS"
+echo
+
+check_policy "^## Worktree discipline$" "worktree discipline"
+check_policy "One substantial epic or research question per session" "one-epic default"
+check_policy "roughly 20 total tool calls" "implementation tool budget"
+check_policy "At or above ~200k" "200k stop-new-scope rule"
+check_policy "At or above ~250k" "250k end-session rule"
+check_policy "^## Plan-mode discipline$" "plan-mode discipline"
+check_policy "^## Verbose-command discipline$" "verbose-output discipline"
+check_policy "^## Testing discipline$" "testing discipline"
+check_policy "historical decision timestamp" "point-in-time research integrity"
+check_policy "go directly to `/end` rather than checkpointing and ending back-to-back" "checkpoint/end deduplication"
+
+if [ -f "$LAUNCHER" ] \
+    && grep -q -- "--max-turns 6" "$LAUNCHER" \
+    && grep -q -- "--no-subagents" "$LAUNCHER" \
+    && grep -q -- "--rules" "$LAUNCHER"; then
+    echo "PASS  grok-safe launcher cost controls"
     PASS=$((PASS + 1))
 else
-    echo "FAIL  efficiency policy worktree discipline"
+    echo "FAIL  grok-safe launcher missing cost controls"
+    FAIL=$((FAIL + 1))
+fi
+
+if [ -f "$RUNTIME" ] \
+    && grep -q '"context", "cost", "turn-timer"' "$RUNTIME" \
+    && grep -q 'grok-safe.zsh' "$RUNTIME"; then
+    echo "PASS  runtime setup status-line + launcher install"
+    PASS=$((PASS + 1))
+else
+    echo "FAIL  runtime setup missing status-line or launcher install"
     FAIL=$((FAIL + 1))
 fi
 
