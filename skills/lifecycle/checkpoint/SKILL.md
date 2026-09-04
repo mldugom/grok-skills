@@ -15,11 +15,13 @@ metadata:
 
 # /checkpoint — Durable Mid-Session Checkpoint
 
-Use this during a long session when useful work has accumulated but the session should continue.
+Use this during a long session when useful work has accumulated and the session will continue.
+
+If the user intends to end the session now, do not perform `/checkpoint` and then `/end` back-to-back. Recommend going directly to `/end`, which already performs closeout verification, durable-state updates, commit handling, landing, and push behavior.
 
 ## Objective
 
-Transfer important state from ephemeral conversation context into durable repository state.
+Transfer important state from ephemeral conversation context into durable repository state without ending the current working session.
 
 ## Procedure
 
@@ -61,6 +63,7 @@ Prefer:
 - exact reproduction commands.
 
 Do not launch an expensive full suite solely because a checkpoint was requested.
+Do not rerun a validation that already passed after the same unchanged code state merely for reassurance.
 
 If verification materially fails, do not commit.
 
