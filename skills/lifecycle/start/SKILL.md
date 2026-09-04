@@ -27,6 +27,10 @@ The objective is to establish the minimum sufficient understanding of the reposi
 - Do not implement anything during bootstrap unless the user explicitly combines `/start` with an implementation request.
 - Do not repeat investigation already resolved by current project documentation.
 - Distinguish verified facts from inference.
+- `/start` is a bootstrap, not a full audit, roadmap review, or implementation phase.
+- Even when the user asks to be "fully aware" of a large project, prefer current durable state and the active work queue over reading all docs/code.
+- If the user's real need is broad reprioritization, complete the minimal bootstrap and recommend `/prioritize`; do not turn `/start` itself into repository-wide archaeology.
+- Default to one substantial epic or research question for the session. Do not silently combine several major workstreams into one execution window.
 
 ## Bootstrap sequence
 
@@ -81,9 +85,9 @@ Prefer, in order when available:
 
 - `PROJECT_STATE.md`
 - current handoff/state document,
-- roadmap or task timeline,
-- architecture overview,
-- recent decision log.
+- active work queue / roadmap summary,
+- architecture overview only when needed,
+- recent decision log only when needed.
 
 Read only enough material to reconstruct current state.
 
@@ -107,6 +111,8 @@ Otherwise infer the most likely immediate objective from durable state and recen
 
 Do not invent one when uncertainty is material.
 
+If several substantial objectives were supplied, rank or separate them but recommend one bounded session objective rather than implementing all of them immediately.
+
 ### 6. Minimal architecture verification
 
 Inspect only the files necessary to validate the execution path relevant to the current objective.
@@ -115,6 +121,7 @@ Do NOT:
 
 - perform repository-wide archaeology by default,
 - read every source file,
+- read every documentation file,
 - run expensive jobs,
 - rerun historical experiments,
 - launch full test suites,
