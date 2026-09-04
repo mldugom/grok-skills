@@ -22,3 +22,14 @@ grok-safe() {
         --no-subagents \
         "$@"
 }
+
+# Track observed Grok spend using xAI's displayed prepaid balance.
+# This intentionally ignores the Grok status-line `$` estimate.
+grok-cost() {
+    local TRACKER="$HOME/repos/grok-skills/scripts/grok-cost.py"
+    if [[ ! -f "$TRACKER" ]]; then
+        echo "grok-cost: tracker not found at $TRACKER" >&2
+        return 1
+    fi
+    python3 "$TRACKER" "$@"
+}
