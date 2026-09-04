@@ -133,7 +133,7 @@ check_policy "^## Plan-mode discipline$" "plan-mode discipline"
 check_policy "^## Verbose-command discipline$" "verbose-output discipline"
 check_policy "^## Testing discipline$" "testing discipline"
 check_policy "historical decision timestamp" "point-in-time research integrity"
-check_policy "go directly to `/end` rather than checkpointing and ending back-to-back" "checkpoint/end deduplication"
+check_policy 'go directly to `/end` rather than checkpointing and ending back-to-back' "checkpoint/end deduplication"
 
 if [ -f "$LAUNCHER" ] \
     && grep -q -- "--max-turns 6" "$LAUNCHER" \
