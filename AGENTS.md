@@ -20,9 +20,13 @@ The repository itself is the source of truth. Installed copies under
 - Never commit authentication data, runtime sessions, credentials,
   secrets, or project-specific proprietary data unless explicitly
   intended.
+- Optimize for correctness, information value, and economic efficiency per model call.
 
 ## Current priority
 
-Lifecycle v1.1 is implemented and verified. Do not design the
-quantitative research skill spine until that architecture has been
-planned deliberately.
+Lifecycle v1.1 and Efficiency v1.2 are the standing operating layer.
+Do not expand lifecycle/efficiency infrastructure again unless observed
+usage exposes a concrete defect.
+
+Next: deliberately design the quantitative research skill spine before
+implementing research/domain skills.
