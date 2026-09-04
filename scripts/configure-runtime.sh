@@ -24,6 +24,27 @@ p = Path(sys.argv[1])
 text = p.read_text()
 lines = text.splitlines()
 
+# Remove the deprecated [privacy] block if an older Grok build wrote it.
+# Grok 1.0.13 reports this section as an unrecognized config key.
+filtered = []
+i = 0
+removed_privacy = False
+while i < len(lines):
+    line = lines[i]
+    if line.strip() == "[privacy]":
+        removed_privacy = True
+        i += 1
+        while i < len(lines):
+            s = lines[i].strip()
+            if s.startswith("[") and s.endswith("]"):
+                break
+            i += 1
+        continue
+    filtered.append(line)
+    i += 1
+
+lines = filtered
+
 # Replace or append [ui.status_line] without disturbing other sections.
 out = []
 i = 0
@@ -55,6 +76,9 @@ if not replaced:
     ])
 
 p.write_text("\n".join(out).rstrip() + "\n")
+
+if removed_privacy:
+    print("Removed deprecated [privacy] config block.")
 PY
 
 if [ -f "$ZSHRC" ]; then
