@@ -16,7 +16,10 @@ Explicit session-control commands:
 - `/checkpoint` — targeted verification, persist state, commit intended work locally; never push by default; use only when the session will continue
 - `/prioritize`
 - `/audit`
+- `/handoff` — provider-neutral implementation handoff: verify scope/tests/Git state, push/open-or-update PR, emit canonical `BOT REPORT`, then stop for Integration Owner review
 - `/end` — verify, commit, land onto the intended primary branch when safe, then optionally push; otherwise WORKTREE LANDING REQUIRED
+
+`/handoff` is deliberately separate from project governance. It standardizes how an agent reports completion; it never self-certifies, self-merges, promotes a protected ref, or releases dependent work. See `docs/agent-handoff-protocol.md`.
 
 ### Efficiency / credit controls
 
@@ -92,7 +95,7 @@ Explicit analytical review modes such as:
 
 ## Architecture
 
-This repository is the durable source of truth.
+This repository is the durable source of truth for reusable skills and provider-specific execution behavior.
 
     ~/repos/grok-skills
              │
@@ -110,6 +113,8 @@ This repository is the durable source of truth.
                     ▼
              ~/.grok/skills
              ~/.grok/policies
+
+Project control planes and dashboards stay in separate repositories. They interoperate through ordinary Git/PR metadata plus the provider-neutral `agent-handoff/v1` report contract, so a future Claude/OpenAI/local agent can replace Grok without changing the monitor.
 
 Do not manually evolve installed copies when the corresponding source
 exists in this repository. Modify the repository source, test it, then
@@ -175,6 +180,7 @@ For consequential work:
     # use Plan mode only for architecture/research design/major ambiguous work
     # after approval, execute one bounded epic
     /checkpoint   # only if continuing the session
+    /handoff      # when the bounded implementation is ready for integration review
     /end          # once the work unit/session is complete
 
 Do not begin a second substantial epic after the first one is complete;
@@ -189,6 +195,7 @@ prefer `/end` and a fresh `/start`.
 - Analytical lenses should generally be explicit/user-invoked.
 - Repository instructions and durable project state should carry
   project knowledge rather than indefinitely growing chat sessions.
+- Agent execution skills and project control-plane logic stay separate and communicate through versioned interfaces.
 - Optimize for correctness, information value, and economic efficiency per model call.
 - Avoid unnecessary agent fan-out and repeated investigation.
 - Never commit Grok authentication, runtime sessions, secrets, or
@@ -196,8 +203,7 @@ prefer `/end` and a fresh `/start`.
 
 ## Status
 
-Lifecycle v1.1 is implemented: checkpoint commits, worktree-awareness,
-and worktree landing before session complete.
+Lifecycle v1.2 adds the provider-neutral `/handoff` skill and `agent-handoff/v1` protocol on top of the prior checkpoint/worktree lifecycle controls.
 
 Efficiency v1.3 adds credit/context/tool-call controls, a cost-visible
 runtime launcher/status line, prepaid-balance reconciliation via `grok-cost`,
