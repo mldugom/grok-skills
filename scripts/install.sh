@@ -10,6 +10,7 @@ SKILLS=(
     checkpoint
     prioritize
     audit
+    handoff
     end
 )
 
