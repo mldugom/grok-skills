@@ -57,7 +57,7 @@ GitHub provides the queue, history, identity, timestamps, comments, branches and
 
 The issue body contains this marker and one JSON envelope:
 
-```markdown
+````markdown
 <!-- ai-galore-agent-task/v1 -->
 ```json
 {
@@ -79,7 +79,7 @@ The issue body contains this marker and one JSON envelope:
   }
 }
 ```
-```
+````
 
 The task issue is the immutable assignment record. If the scientific or implementation contract materially changes, create a new task or explicitly supersede the old one; do not silently rewrite history.
 
@@ -120,7 +120,7 @@ Default denies include:
 
 Anything else is denied rather than prompting forever in a headless process. A task may add narrowly scoped allow rules when required.
 
-This is a control boundary, not a security proof. Worktrees, GitHub branch protection, repository rules and human merge gates remain important.
+This is a control boundary, not a security proof. Worktrees, GitHub branch protection, repository rules and human merge gates remain important. Current xAI documentation also supports a sandbox profile; adding a pinned sandbox to this runner should follow a successful first smoke test rather than silently assuming a profile works on the user's installation.
 
 ## Cost discipline
 
@@ -143,8 +143,8 @@ The runner uses the local Grok CLI. If Grok is logged in with the normal browser
 ```bash
 cd ~/repos/grok-skills
 git fetch origin
-# after the transport PR is merged:
-git pull --ff-only origin main
+# Before merge, the transport can be tested directly from its branch:
+git switch chatgpt/git-agent-transport-v1
 
 mkdir -p ~/.ai-galore
 cp examples/ai-galore-worker.json ~/.ai-galore/worker.json
