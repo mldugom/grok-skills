@@ -5,6 +5,7 @@
   "grok_defaults": {
     "effort": "medium",
     "max_turns": 8,
+    "continuation_max_turns": 4,
     "no_subagents": true,
     "disable_web_search": true,
     "allow": [],
