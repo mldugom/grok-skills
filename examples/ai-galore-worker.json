@@ -1,0 +1,25 @@
+{
+  "schema_version": "ai-galore-worker/v1",
+  "worker_id": "local-grok-1",
+  "poll_seconds": 30,
+  "grok_defaults": {
+    "effort": "medium",
+    "max_turns": 8,
+    "no_subagents": true,
+    "disable_web_search": true,
+    "allow": [],
+    "deny": []
+  },
+  "repositories": [
+    {
+      "repository": "mldugom/ldps",
+      "path": "~/repos/ldps",
+      "enabled": true
+    },
+    {
+      "repository": "mldugom/crypto-innout",
+      "path": "~/repos/crypto-innout",
+      "enabled": false
+    }
+  ]
+}
