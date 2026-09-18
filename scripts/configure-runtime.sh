@@ -16,7 +16,7 @@ else
     touch "$CONFIG"
 fi
 
-python - "$CONFIG" <<'PY'
+python3 - "$CONFIG" <<'PY'
 from pathlib import Path
 import sys
 
